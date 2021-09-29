@@ -1,0 +1,41 @@
+
+.root {
+    -fx-background-color: white;
+}
+.headertext {
+    -fx-background-color: black;
+    -fx-fill: lightgrey;
+    -fx-font-size: 30px;
+
+}
+.hbox-header {
+    -fx-background-color: black;
+    -fx-text-fill: #cfcfcf;
+    -fx-border-style: hidden hidden solid hidden;
+    -fx-border-width: 10;
+    -fx-border-color: #0078d7;
+    -fx-alignment: center;
+}
+.color {
+    -fx-border-color: #0078d7;
+}
+.input-login {
+    -fx-pref-height: 30;
+    -fx-min-height: 30;
+}
+.login-btn {
+    -fx-pref-height: 30;
+    -fx-min-height: 30;
+    -fx-border-radius: 2;
+    -fx-text-fill: white;
+    -fx-background-color: #0078d7;
+    -fx-fit-to-width: true;
+}
+.dashboard-vbox {
+    -fx-background-color: black;
+}
+.welcome-text {
+    -fx-font-weight: BOLD;
+    -fx-font-size: 30px;
+
+}
