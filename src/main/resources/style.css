@@ -23,6 +23,11 @@
     -fx-pref-height: 30;
     -fx-min-height: 30;
 }
+.input-login-add {
+    -fx-pref-height: 30;
+    -fx-min-height: 30;
+    -fx-min-width: 250;
+}
 .login-btn {
     -fx-pref-height: 30;
     -fx-min-height: 30;
@@ -37,5 +42,17 @@
 .welcome-text {
     -fx-font-weight: BOLD;
     -fx-font-size: 30px;
-
+}
+.nav-btn {
+    -fx-text-fill: #c3c3c3;
+    -fx-font-size: 20px;
+    -fx-background-color: black;
+    -fx-border-color: black;
+}
+.nav-btn:hover {
+    -fx-background-color: rgba(109, 109, 109, 0.23);
+    -fx-border-color: rgba(255, 255, 255, 0.26);
+}
+.nav-btn:pressed {
+    -fx-border-color: #0078d7;
 }

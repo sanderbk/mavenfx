@@ -2,22 +2,34 @@ package nl.inholland.javafx;
 
 
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.*;
 
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
 import javafx.stage.*;
-import nl.inholland.javafx.Users.Student;
+import nl.inholland.javafx.Users.*;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.time.LocalDate;
+import java.util.List;
+
 
 public class Dashboard {
+public static Person personInput;
+public static boolean isEditor() {
+    boolean isEditor = !personInput.role.equals("Basic");
+    return isEditor;
+}
 
 
-    public Dashboard(Student sAuth)
+    public Dashboard(Person pAuth)
     {
+        personInput = pAuth;
+
         //stage settings
         Stage window = new Stage();
         window.setHeight(420);
@@ -25,72 +37,100 @@ public class Dashboard {
         window.setTitle("University Project | Dashboard");
         window.setResizable(false);
 
+        //navigation buttons
         Button dashBtn = new Button("Dashboard");
-        dashBtn.getStyleClass().add("login-btn");
-
         Button studentBtn = new Button("Students");
-        studentBtn.getStyleClass().add("login-btn");
-
         Button teacherBtn = new Button("Teachers");
-        teacherBtn.getStyleClass().add("login-btn");
 
+        //crud buttons
+        Button buttonAdd = new Button("Add Student");
+        buttonAdd.setPrefSize(100, 20);
+        buttonAdd.getStyleClass().add("login-btn");
 
+        Button buttonEdit = new Button("Edit Student");
+        buttonEdit.setPrefSize(100, 20);
+        buttonEdit.getStyleClass().add("login-btn");
+        buttonEdit.setStyle("-fx-background-color: grey");
+
+        Button buttonDelete = new Button("Delete Student");
+        buttonDelete.setPrefSize(100, 20);
+        buttonDelete.getStyleClass().add("login-btn");
+        buttonDelete.setStyle("-fx-background-color: red");
+
+        Button buttonAddTeacher = new Button("Add Teacher");
+        buttonAddTeacher.setPrefSize(100, 20);
+        buttonAddTeacher.getStyleClass().add("login-btn");
+
+        Button buttonEditTeacher = new Button("Edit Teacher");
+        buttonEditTeacher.setPrefSize(100, 20);
+        buttonEditTeacher.getStyleClass().add("login-btn");
+        buttonEditTeacher.setStyle("-fx-background-color: grey");
+
+        Button buttonDeleteTeacher = new Button("Delete Teacher");
+        buttonDeleteTeacher.setPrefSize(100, 20);
+        buttonDeleteTeacher.getStyleClass().add("login-btn");
+        buttonDeleteTeacher.setStyle("-fx-background-color: red");
+
+        //initialize window settings
+        BorderPane border = new BorderPane();
+
+        //create object of create
+        Create createUI = new Create();
         //button array for vbox
         Button[] buttons = new Button[] {
                 dashBtn,
                 studentBtn,
                 teacherBtn,
         };
-        AtomicInteger finalResult = new AtomicInteger();
+        Button[] crudBtns = new Button[] {
+                buttonAdd,
+                buttonEdit,
+                buttonDelete,
+                buttonAddTeacher,
+                buttonEditTeacher,
+                buttonDeleteTeacher,
+        };
+
+        VBox leftNav = addVBox(buttons);
+        border.setLeft(leftNav);
+
+
         for (int i = 0; i < buttons.length ; i++) {
             int finalI = i;
+            buttons[i].getStyleClass().add("nav-btn");
+            buttons[i].setStyle("-fx-text-fill: #cfcfcf");
+            ImageView imageView = new ImageView("img/icon" + (i + 1) + ".png");
+
+            System.out.println("img/icon" + (i + 1) + ".png");
+            buttons[i].setGraphic(imageView);
 
             buttons[i].setOnAction((ActionEvent event) -> {
-                System.out.println( buttons[finalI].toString() + " clicked");
-                finalResult.set(finalI);
-                System.out.println(finalResult);
+                System.out.println( buttons[finalI].getText() + " clicked");
             });
-
         }
 
+        //initialize hbox with functions and check if role is admin
+        HBox hboxStudent = createUI.addHBoxStudent(crudBtns);
+        HBox hboxTeacher = createUI.addHBoxTeacher(crudBtns);
 
+        dashBtn.setOnAction((ActionEvent event) -> {
+            border.setCenter(createUI.addGridPane());
+        });
 
-
-
-        //initialize window settings
-        BorderPane border = new BorderPane();
-      // border.setTop();
-
-        border.setLeft(addVBox(buttons));
-      
-          // Add stack to HBox in top region
-
-       // border.setCenter(addGridPane());
-
-
-
+        studentBtn.setOnAction((ActionEvent event) -> {
+            border.setCenter(createUI.addBorderPaneStudent(hboxStudent));
+        });
+        teacherBtn.setOnAction((ActionEvent event) -> {
+            border.setCenter(createUI.addBorderPaneTeacher(hboxTeacher));
+        });
+        buttonAdd.setOnAction((ActionEvent event) -> {
+            border.setCenter(createUI.createPane());
+        });
 
         Scene scene=new Scene(border);
         scene.getStylesheets().add("style.css");
         window.setScene(scene);
         window.show();
-
-
-    }
-    public void gridPaneChanger(GridPane insert, GridPane output) {
-
-        System.out.println("old gp" + insert.getChildren().toString());
-        System.out.println("new gp" + output.getChildren().toString());
-        //test cause retarded java
-        Text text = new Text("Welcome NEWNEWNEW");
-        text.getStyleClass().add("welcome-text");
-        insert.add(text, 1, 1);
-
-
-        GridPane temp = output;
-        System.out.println("old gp after swap" + insert.getChildren().toString());
-        System.out.println("new gp after swap" + output.getChildren().toString());
-
     }
     public VBox addVBox(Button[] btn) {
         VBox vbox = new VBox();
@@ -111,28 +151,5 @@ public class Dashboard {
 
         return vbox;
     }
-    public GridPane addGridPane(Button b, Student student) {
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(0, 10, 0, 10));
 
-        String input = b.getText().toString();
-        switch (input) {
-            case "Dashboard":
-                grid.getChildren().clear();
-                Text text = new Text("Welcome " + student.firstName);
-                text.getStyleClass().add("welcome-text");
-                grid.add(text, 1, 0);
-                break;
-            case "Students":
-                grid.getChildren().clear();
-                text = new Text("Students");
-                text.getStyleClass().add("welcome-text");
-                grid.add(text, 1, 0);
-                break;
-
-        }
-        return grid;
-    }
 }

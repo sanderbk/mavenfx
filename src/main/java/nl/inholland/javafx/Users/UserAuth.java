@@ -4,21 +4,36 @@ package nl.inholland.javafx.Users;
 import java.util.*;
 
 public class UserAuth {
-    public static Student Auth( String userName, String Password) {
+    public static Person Auth( String userName, String Password) {
         boolean Auth = false;
-        Student studentTrue = null;
+        Person personTrue = null;
         for (Student s: DbMock.students
              ) {
             System.out.println(s.userName + " testing with " +  userName);
             System.out.println(s.userPassword + " testing with " +  Password);
             if (s.userName.equals(userName) && s.userPassword.equals(Password))
             {
-                studentTrue = s;
+                personTrue = s;
                 Auth = true;
                 break;
             }
-            else {
-                Auth = false;
+        }
+        for (Teacher t: DbMock.teachers
+        ) {
+            if (t.userName.equals(userName) && t.userPassword.equals(Password))
+            {
+                personTrue = t;
+                Auth = true;
+                break;
+            }
+        }
+        for (Manager m: DbMock.managers
+        ) {
+            if (m.userName.equals(userName) && m.userPassword.equals(Password))
+            {
+                personTrue = m;
+                Auth = true;
+                break;
             }
         }
        if (Auth) {
@@ -27,7 +42,7 @@ public class UserAuth {
        else {
            System.out.println("Login UNSUCCESFUL");
        }
-        return studentTrue;
+        return personTrue;
         }
 
 

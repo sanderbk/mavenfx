@@ -15,9 +15,7 @@ import javafx.scene.text.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.image.*;
-import nl.inholland.javafx.Users.Role;
-import nl.inholland.javafx.Users.Student;
-import nl.inholland.javafx.Users.UserAuth;
+import nl.inholland.javafx.Users.*;
 
 import java.time.LocalDate;
 
@@ -49,17 +47,7 @@ public class App extends Application {
 
 
         window.close();
-
-        Student sTest = new Student(1, "Markie", "Welkom123@", "Mark", "DeHaan", Role.Basic, LocalDate.of(1997, 4, 12), "IT-02-A");
-        Dashboard d = new Dashboard(sTest);
-
-
-
-
-
-
-
-
+        Dashboard d = new Dashboard(new Manager(7, "Admin", "Welkom123@", "Admin", "Admin", Role.Admin));
     }
 
     public HBox addHBox() {
@@ -79,11 +67,6 @@ public class App extends Application {
 
         return hbox;
     }
-   /* public void closeWindow() {
-        if (isLoggedIn) {
-
-        }
-    }*/
 
     public VBox addVBox() {
         VBox vbox = new VBox();
@@ -121,9 +104,7 @@ public class App extends Application {
         loginButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-
-               Student sAuth = UserAuth.Auth( usrNameTextfield.getText(), pwPassField.getText());
-               // boolean Auth = false;
+              Person sAuth = UserAuth.Auth(usrNameTextfield.getText(), pwPassField.getText());
                 if (sAuth != null) {
                     isLoggedIn = true;
                     loginButton.getScene().getWindow().hide();
