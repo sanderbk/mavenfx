@@ -7,14 +7,14 @@ import java.time.Period;
 public class Student extends Person {
 
     public LocalDate BirthDate;
-    public Group Group;
+    public SchoolGroup SchoolGroup;
     public int Age;
 
 
-    public Student(int id, String uN, String uP, String firstName, String lastName,Role role, LocalDate bD, Group group){
+    public Student(int id, String uN, String uP, String firstName, String lastName,Role role, LocalDate bD, SchoolGroup schoolGroup){
         super(id, uN, uP, firstName, lastName, role);
         this.BirthDate = bD;
-        this.Group = group;
+        this.SchoolGroup = schoolGroup;
         this.Age = Period.between(BirthDate, LocalDate.now()).getYears();
 
     }
@@ -25,11 +25,11 @@ public class Student extends Person {
     public void setAge(int set) {
        this.Age = set;
     }
-    public Group getGroup() {
-        return Group;
+    public SchoolGroup getGroup() {
+        return SchoolGroup;
     }
-    public void setGroup(Group set) {
-        this.Group = set;
+    public void setGroup(SchoolGroup set) {
+        this.SchoolGroup = set;
     }
     public LocalDate getBirthDate() {
         return BirthDate;

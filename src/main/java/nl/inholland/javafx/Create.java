@@ -4,12 +4,10 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -21,11 +19,22 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class Create {
-    public BorderPane createPane() {
+    private Student selectedStudent;
+
+    public Student getSelectedStudent() {
+        return selectedStudent;
+    }
+
+    public BorderPane createPane(Student input) {
+        boolean createStudent = false;
+        if (input == null) createStudent = true;
+
         BorderPane createPane = new BorderPane();
         createPane.setPadding(new Insets(25));
         //add title
+
         Text t = new Text("Add Student");
+        if (!createStudent) t.setText("Edit Student");
         t.getStyleClass().add("headertext");
         t.setStyle("-fx-font-size: 20");
 
@@ -40,24 +49,29 @@ public class Create {
         //username
         TextField usrNameTextfield = new TextField();
         usrNameTextfield.setPromptText("Username");
+        if (!createStudent) usrNameTextfield.setText(selectedStudent.userName);
         usrNameTextfield.getStyleClass().add("input-login-add");
         //password
         TextField pwPassField = new TextField();
         pwPassField.setPromptText("Password");
+        if (!createStudent) pwPassField.setText(selectedStudent.userPassword);
         pwPassField.getStyleClass().add("input-login-add");
         //firstname
         TextField firstNameField = new TextField();
         firstNameField.setPromptText("First Name");
+        if (!createStudent) firstNameField.setText(selectedStudent.getFirstName());
         firstNameField.getStyleClass().add("input-login-add");
         //lastname
         TextField lastNameField = new TextField();
         lastNameField.setPromptText("Last Name");
+        if (!createStudent) lastNameField.setText(selectedStudent.getLastName());
         lastNameField.getStyleClass().add("input-login-add");
         //combobox groups
-        ComboBox<Group> cbxGroup = new ComboBox<>();
-        cbxGroup.setItems( FXCollections.observableArrayList( Group.values()));
+        ComboBox<SchoolGroup> cbxGroup = new ComboBox<>();
+        cbxGroup.setItems( FXCollections.observableArrayList( SchoolGroup.values()));
         cbxGroup.getStyleClass().add("input-login-add");
         cbxGroup.setPromptText("Groep");
+        if (!createStudent) cbxGroup.setValue(selectedStudent.getGroup());
 
         vboxleft.getChildren().addAll(usrNameTextfield, pwPassField, firstNameField, lastNameField, cbxGroup);
 
@@ -70,6 +84,8 @@ public class Create {
         vboxRight.setSpacing(8);
         DatePicker datePicker = new DatePicker();
         datePicker.getStyleClass().add("input-login-add");
+        if (!createStudent) datePicker.setValue(selectedStudent.getBirthDate());
+
         vboxRight.getChildren().add(datePicker);
 
         //hbox
@@ -78,32 +94,50 @@ public class Create {
         hboxBtns.setSpacing(10);
 
         Button buttonAdd = new Button("Add Student");
+        if (!createStudent) buttonAdd.setText("Edit Student");
         buttonAdd.setPrefSize(100, 20);
         buttonAdd.getStyleClass().add("login-btn");
         buttonAdd.setVisible(false);
 
-        StringProperty passwordFieldProperty = pwPassField.textProperty();
-        passwordFieldProperty.addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
-                System.out.println("textfield changed from" + oldValue + " to " + newValue);
-                if (newValue.length() >= 8 && newValue.matches(".*[-\\d.].*") && newValue.matches(".*[a-z].*") && !newValue.matches(".*[\\s.].*") && newValue.matches(".*[$&+,:;=?@#|'<>.^*()%!-].*")) {
-                    buttonAdd.setVisible(true);
+        if (createStudent) {
+            StringProperty passwordFieldProperty = pwPassField.textProperty();
+            passwordFieldProperty.addListener(new ChangeListener<String>() {
+                @Override
+                public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
+                    System.out.println("textfield changed from" + oldValue + " to " + newValue);
+                    if (newValue.length() >= 8 && newValue.matches(".*[-\\d.].*") && newValue.matches(".*[a-z].*") && !newValue.matches(".*[\\s.].*") && newValue.matches(".*[$&+,:;=?@#|'<>.^*()%!-].*")) {
+                        buttonAdd.setVisible(true);
+                    }
+                    else {
+                        buttonAdd.setVisible(false);
+                    }
                 }
-                else {
-                    buttonAdd.setVisible(false);
-                }
-            }
-        });
+            });
+        }
+        else {
+            buttonAdd.setVisible(true);
+        }
 
 
-
+        boolean finalCreateStudent = createStudent;
         buttonAdd.setOnAction((ActionEvent event) -> {
             if(studentCorrect(usrNameTextfield.getText(), pwPassField.getText(), firstNameField.getText(),lastNameField.getText(), cbxGroup.getValue(), datePicker.getValue())) {
-                        addStudentWithForm(usrNameTextfield.getText(),
-                        pwPassField.getText(), firstNameField.getText(),
-                        lastNameField.getText(), cbxGroup.getValue(),
-                        datePicker.getValue());
+
+                if (finalCreateStudent) {
+                           addStudentWithForm(usrNameTextfield.getText(),
+                                   pwPassField.getText(), firstNameField.getText(),
+                                   lastNameField.getText(), cbxGroup.getValue(),
+                                   datePicker.getValue());
+
+                       }
+                       else {
+                           selectedStudent.setUserName(usrNameTextfield.getText());
+                           selectedStudent.setUserPassword(pwPassField.getText());
+                           selectedStudent.setFirstName(firstNameField.getText());
+                           selectedStudent.setLastName(lastNameField.getText());
+                           selectedStudent.setGroup(cbxGroup.getValue());
+                           selectedStudent.setBirthDate(datePicker.getValue());
+                       }
             }
             else {
                 //initialize alert
@@ -131,14 +165,15 @@ public class Create {
         createPane.setBottom(hboxBtns);
         return createPane;
     }
-    public boolean studentCorrect(String uName, String pW, String firstName, String lastName, Group group, LocalDate bd) {
-        boolean check = !uName.isEmpty() && pW.length() >= 8 && !firstName.isEmpty() && !lastName.isEmpty() && group != null && bd != null;
+
+    public boolean studentCorrect(String uName, String pW, String firstName, String lastName, SchoolGroup schoolGroup, LocalDate bd) {
+        boolean check = !uName.isEmpty() && pW.length() >= 8 && !firstName.isEmpty() && !lastName.isEmpty() && schoolGroup != null && bd != null;
         return check;
     }
 
-    public void addStudentWithForm(String uName, String pW, String firstName, String lastName, Group group, LocalDate bd) {
+    public void addStudentWithForm(String uName, String pW, String firstName, String lastName, SchoolGroup schoolGroup, LocalDate bd) {
         Student sNew = new Student(
-                Person.MaxID(), uName, pW, firstName, lastName, Role.Basic, bd, group
+                Person.MaxID(), uName, pW, firstName, lastName, Role.Basic, bd, schoolGroup
         );
         DbMock.students.add(sNew);
        System.out.println(sNew.BirthDate.toString());
@@ -164,7 +199,7 @@ public class Create {
     public  TableView<Student> addTableViewStudent() {
         TableView<Student> table = new TableView();
         table.setEditable(false);
-        List<Student> studentList = DbMock.students;
+        List<Student> studentList = DbMock.getStudents();
 
         TableColumn firstNameCol = new TableColumn("First Name");
         firstNameCol.setCellValueFactory(new PropertyValueFactory<>("FirstName"));
@@ -188,39 +223,24 @@ public class Create {
                 table.getItems().add(s);
             }
 
+
         table.getColumns().addAll( idCol, firstNameCol, lastNameCol, birthdateCol, ageCol, groupCol);
-
-
-
-
-            Student sInput = studentList.get(1);
-
+            //get student from table
         table.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
             @Override
             public void changed(ObservableValue observableValue, Object oldValue, Object newValue) {
                 //Check whether item is selected and set value of selected item to Label
             if (table.getSelectionModel().getSelectedItem() != null)
-            studentCast(table.getSelectionModel().getSelectedItem(), sInput);
+                studentSelecter(table.getSelectionModel().getSelectedItem());
             }
         });
-
-
-
-
-
-
         return table;
     }
+    public void studentSelecter(Student s) {
+        if (s != null)  selectedStudent = s;
+        System.out.println(selectedStudent.firstName + selectedStudent.lastName);
 
-    public void studentCast(Student s, Student input) {
-        Student temp = s;
-        s = input;
-        input = temp;
-        System.out.println(s.firstName + " SELECTED " + input.firstName + " OLD DATA");
     }
-
-
-
     public HBox addHBoxStudent(Button btn[]) {
         HBox hbox = new HBox();
         hbox.setPadding(new Insets(15, 12, 15, 12));
@@ -245,7 +265,7 @@ public class Create {
     public TableView addTableViewTeacher() {
         TableView table = new TableView();
         table.setEditable(false);
-        List<Teacher> teacherList = DbMock.teachers;
+        List<Teacher> teacherList = DbMock.getTeachers();
 
         TableColumn firstNameCol = new TableColumn("First Name");
         firstNameCol.setCellValueFactory(new PropertyValueFactory<>("FirstName"));
@@ -279,7 +299,7 @@ public class Create {
     public  BorderPane addBorderPaneTeacher(HBox hbox) {
         BorderPane TablePane = new BorderPane();
         TablePane.setPadding(new Insets(25));
-        TableView table = addTableViewTeacher();
+        TableView<Teacher> table = addTableViewTeacher();
 
         TablePane.setCenter(table);
         if (!Dashboard.personInput.role.equals(Role.Basic)) {

@@ -17,8 +17,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.image.*;
 import nl.inholland.javafx.Users.*;
 
-import java.time.LocalDate;
-
 
 public class App extends Application {
     private boolean isLoggedIn = false;
@@ -53,9 +51,9 @@ public class App extends Application {
     public HBox addHBox() {
         HBox hbox = new HBox();
         Text t = new Text();
-        t.getStyleClass().add("headertext");
-        t.setText("University Project");
 
+        t.setText("University Project");
+        t.getStyleClass().add("headertext");
         hbox.setPadding(new Insets(12, 12, 12, 12));
         hbox.setSpacing(10);
         hbox.getStyleClass().add("hbox-header");

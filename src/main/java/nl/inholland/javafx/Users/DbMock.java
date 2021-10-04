@@ -7,13 +7,25 @@ import java.util.List;
 public class DbMock {
 public static List<Student> students = new ArrayList<>();
 static {
-    Student s1 = new Student(1, "Markie", "Welkom123@", "Mark", "DeHaan", Role.Basic, LocalDate.of(1997, 4, 12), Group.INF02A);
-    Student s2 = new Student(2, "Ali1", "Welkom123@", "Ali", "Usmani",Role.Basic, LocalDate.of(1999, 4, 12), Group.INF02B);
-    Student s3 = new Student(3, "Frenk", "Welkom123@", "Frenk", "Dersjant", Role.Basic, LocalDate.of(1991, 4, 12), Group.INF02C);
+    Student s1 = new Student(1, "Markie", "Welkom123@", "Mark", "DeHaan", Role.Basic, LocalDate.of(1997, 4, 12), SchoolGroup.INF02A);
+    Student s2 = new Student(2, "Ali1", "Welkom123@", "Ali", "Usmani",Role.Basic, LocalDate.of(1999, 4, 12), SchoolGroup.INF02B);
+    Student s3 = new Student(3, "Frenk", "Welkom123@", "Frenk", "Dersjant", Role.Basic, LocalDate.of(1991, 4, 12), SchoolGroup.INF02C);
     students.add(s1);
     students.add(s2);
     students.add(s3);
 }
+
+    public static List<Student> getStudents() {
+        return students;
+    }
+    public static void deleteStudent(Student s) {
+        students.remove(s);
+    }
+
+    public static List<Teacher> getTeachers() {
+        return teachers;
+    }
+
     public static List<Teacher> teachers = new ArrayList<>();
     static {
         Teacher t1 = new Teacher(4, "Sander", "Welkom123@", "Sander", "Baak", Role.Editor, LocalDate.of(1997, 4, 12), 2400.00);

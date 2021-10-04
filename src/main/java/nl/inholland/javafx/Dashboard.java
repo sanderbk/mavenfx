@@ -16,6 +16,7 @@ import nl.inholland.javafx.Users.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 
 public class Dashboard {
@@ -113,6 +114,10 @@ public static boolean isEditor() {
         HBox hboxStudent = createUI.addHBoxStudent(crudBtns);
         HBox hboxTeacher = createUI.addHBoxTeacher(crudBtns);
 
+        //default BP setting
+        border.setCenter(createUI.addGridPane());
+
+
         dashBtn.setOnAction((ActionEvent event) -> {
             border.setCenter(createUI.addGridPane());
         });
@@ -124,7 +129,36 @@ public static boolean isEditor() {
             border.setCenter(createUI.addBorderPaneTeacher(hboxTeacher));
         });
         buttonAdd.setOnAction((ActionEvent event) -> {
-            border.setCenter(createUI.createPane());
+            Student s = null;
+            border.setCenter(createUI.createPane(s));
+        });
+        buttonEdit.setOnAction((ActionEvent event) -> {
+            if (createUI.getSelectedStudent() != null)
+            {
+                Student s = createUI.getSelectedStudent();
+                border.setCenter(createUI.createPane(s));
+            }
+
+
+
+        });
+        buttonDelete.setOnAction((ActionEvent event) -> {
+            if (createUI.getSelectedStudent() != null)
+            {
+                Student s = createUI.getSelectedStudent();
+                Alert a = new Alert(Alert.AlertType.CONFIRMATION);
+
+                a.setTitle("Weet je zeker dat je " + s.firstName + " wilt verwijderen?");
+                a.setContentText("Weet je zeker dat je " + s.firstName + " wilt verwijderen?");
+                a.setResizable(false);
+                Optional<ButtonType> result = a.showAndWait();
+                // set content text
+                if (result.get() == ButtonType.OK){
+                    System.out.println("Deleting......");
+                    DbMock.deleteStudent(s);
+                    border.setCenter(createUI.addBorderPaneStudent(hboxStudent));
+                }
+            }
         });
 
         Scene scene=new Scene(border);
@@ -138,11 +172,24 @@ public static boolean isEditor() {
         vbox.setSpacing(8);
         vbox.getStyleClass().add("dashboard-vbox");
 
-        Text title = new Text("University \n Project");
-        title.getStyleClass().add("headertext");
-        title.setStyle("-fx-font-size: 20");
+        //text
 
-        vbox.getChildren().add(title);
+
+
+        //label
+        Label la = new Label("University\n Project");
+        la.getStyleClass().add("unitext");
+        //uni img
+        ImageView imageView = new ImageView("img/logo.png");
+        la.setGraphic(imageView);
+        la.getStyleClass().add("headertext");
+        la.setStyle("-fx-font-size: 18");
+        la.setTranslateX(25);
+        imageView.setFitHeight(35);
+        imageView.setPreserveRatio(true);
+
+
+        vbox.getChildren().add(la);
 
         for (int i=0; i<btn.length; i++) {
             VBox.setMargin(btn[i], new Insets(0, 0, 0, 8));

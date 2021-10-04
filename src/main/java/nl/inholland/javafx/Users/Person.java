@@ -36,6 +36,18 @@ public class Person {
     public void setId(int set) {
         this.id = set;
     }
+    public String getUserName() {
+        return userName;
+    }
+    public void setUserName(String set) {
+        this.userName = set;
+    }
+    public String getUserPassword() {
+        return userPassword;
+    }
+    public void setUserPassword(String set) {
+        this.userPassword = set;
+    }
     public String getFirstName() {
         return firstName;
     }

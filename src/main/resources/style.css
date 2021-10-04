@@ -8,6 +8,10 @@
     -fx-font-size: 30px;
 
 }
+.unitext {
+    -fx-text-fill: #c3c3c3;
+    -fx-font-size: 20;
+}
 .hbox-header {
     -fx-background-color: black;
     -fx-text-fill: #cfcfcf;
